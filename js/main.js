@@ -11,8 +11,8 @@ var gLevel = {
 
 function init() {
     gBoard = buildBoard()
-    setMinesNegsCount(gBoard)
     renderBoard(gBoard)
+    setMinesNegsCount(gBoard)
 }
 
 function buildBoard() {
@@ -23,6 +23,8 @@ function buildBoard() {
         board[i] = []
         for (var j = 0; j < gLevel.SIZE; j++) {
             var cell = {
+                i: i,
+                j: j,
                 minesAroundCount: null,
                 isShown: false,
                 isMine: false,
@@ -46,16 +48,7 @@ function renderBoard(board) {
         for (var j = 0; j < board[0].length; j++) {
             var currCell = board[i][j]
             var cellId = `cell-${i}-${j}`
-            // if (currCell.isShown) {
-            //     if (currCell.isMine) {
-            //         var cellTxt = BANG
-            //     } else {
-            //         var cellTxt = currCell.minesAroundCount
-            //     }
             strHTML += `<td id=${cellId} class="cell" onclick="cellClicked(this, ${i}, ${j})"></td>`
-            // } else {
-            //     strHTML += `<td class="cell" onclick="cellClicked(this, ${i}, ${j})"></td>`
-            // }
         }
         strHTML += '</tr>'
     }
@@ -109,6 +102,5 @@ function randLocateMines() {
         var currCoord = { i: i, j: j }
         if (!minesCoord.includes(currCoord)) minesCoord.push(currCoord)
     }
-
     return minesCoord
 }
