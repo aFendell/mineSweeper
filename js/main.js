@@ -20,7 +20,6 @@ var gCellsToFind = gLevel.SIZE ** 2
 function init() {
     gBoard = buildBoard()
     renderBoard(gBoard)
-
 }
 
 function buildBoard() {
@@ -44,8 +43,6 @@ function buildBoard() {
             // if (i === gMinesCoord[1].i && j === gMinesCoord[1].j) board[i][j].isMine = true
         }
     }
-
-    console.table(board)
     return board
 }
 
@@ -66,25 +63,21 @@ function renderBoard(board) {
 }
 
 function cellClicked(elCell, i, j) {
+
     var currCell = gBoard[i][j]
     if (currCell.isMarked) return
+
     gCellsToFind--
-    // console.log('gCellsToFind:', gCellsToFind);
+
     if (!isGameON) {
         isGameON = true
         gMinesCoord = randLocateMines(i, j)
-        console.log('mines loctions:', gMinesCoord);
         setMinesNegsCount(gBoard)
-        // console.log('negs updated');
         currCell.isShown = true
         if (currCell.minesAroundCount !== 0) {
             elCell.innerText = currCell.minesAroundCount
         }
     }
-
-    console.log('cell ' + i + ',' + j + ' is clicked');
-
-
 
     elCell.classList.add("disabled")
     if (currCell.isMine) {
@@ -96,20 +89,22 @@ function cellClicked(elCell, i, j) {
             currMine.isShown = true
             var elCell = document.querySelector(`#cell-${currI}-${currJ}`)
             elCell.innerText = BANG
-            console.log('GAME OVER');
-            // GAME OVER
         }
+        gameOver()
     } else {
         currCell.isShown = true
-        if (currCell.minesAroundCount !== 0) {
-            elCell.innerText = currCell.minesAroundCount
-            // check Win
-            if (gCellsToFind === 0) {
-                // VICTORY
-                console.log('VICTORY');
-            }
+        if (currCell.minesAroundCount !== 0) elCell.innerText = currCell.minesAroundCount
+        // check Win
+        if (gCellsToFind === 0) {
+            // VICTORY
+            victory()
         }
     }
+}
+
+
+function restart() {
+    console.log('Restart');
 }
 
 function setMinesNegsCount(board) {
@@ -119,6 +114,16 @@ function setMinesNegsCount(board) {
             currCell.minesAroundCount = countNegsMines(currCell)
         }
     }
+}
+
+function victory() {
+    var elBtn = document.querySelector(".smiley")
+    elBtn.innerText = WIN
+    console.log('VICTORY');
+
+    // stop time
+
+    // check time vs high score
 }
 
 function countNegsMines(cell) {
@@ -137,8 +142,6 @@ function countNegsMines(cell) {
 function randLocateMines(iStart, jStart) {
     var minesCoord = []
     var minesCount = gLevel.MINES
-    // console.log('Number of mines:', minesCount);
-    // console.log('minesCoord.length:', minesCoord.length);
     while (minesCoord.length < minesCount) {
         var i = getRandomInt(0, gLevel.SIZE)
         var j = getRandomInt(0, gLevel.SIZE)
@@ -152,13 +155,7 @@ function randLocateMines(iStart, jStart) {
     return minesCoord
 }
 
-function GameOver() {
-
-}
-
 function cellFlaged(elCell, i, j) {
-    // console.log('cell ' + i + ',' + j + ' is flaged');
-    console.log('gCellsToFind:', gCellsToFind);
     var currCell = gBoard[i][j]
     currCell.oncontextmenu
     if (currCell.isMarked) {
@@ -172,11 +169,13 @@ function cellFlaged(elCell, i, j) {
         if (gCellsToFind === 0) {
             // VICTORY
             console.log('VICTORY');
+            victory()
         }
     }
     document.addEventListener("contextmenu", function (e) {
         e.preventDefault()
     }, false)
+    console.log('gCellsToFind:', gCellsToFind);
 }
 
 function setLevel(elBtn) {
@@ -196,9 +195,23 @@ function setLevel(elBtn) {
             MINES: 30
         }
     }
-    console.log('elBtn.innerText:', elBtn.innerText);
-    console.log('gLevel:', gLevel);
+
     gBoard = buildBoard()
     renderBoard(gBoard)
     gCellsToFind = gLevel.SIZE ** 2
+}
+
+function gameOver() {
+    var elBtn = document.querySelector(".smiley")
+    elBtn.innerText = DEAD
+
+    // problem inserting innerHTML
+    // var strHTML = 'onclick="restart()"'
+    // elBtn.innerHTML += strHTML
+
+    // for (var i = 0; i < gBoard.length; i++){
+    //     for (var j = 0; j < gBoard[0].length ; j++){
+
+    //     }
+    // }    
 }

@@ -12,6 +12,10 @@
     <h1>Mine Sweeper</h1>
 
     <p>High Score: <span class="high-score"></span>x</p>
+
+
+    
+
     <div class="levels center">
         <button class="level-btn" onclick="setLevel(this)">Beginner</button>
         <button class="level-btn" onclick="setLevel(this)">Medium</button>
@@ -19,8 +23,11 @@
     </div>
 
     <div class="status center">
-        <button class="">🙂</button>
+        <button class="smiley" onclick="restart()">🙂</button>
+        <label id="minutes">00</label>:<label id="seconds">00</label>
     </div>
+
+    
 
     <div class="board-container">
         <table class="center">
