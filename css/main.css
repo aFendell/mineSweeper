@@ -1,31 +1,44 @@
 body {
-    background-color: rgb(253, 249, 230);
-    
+    background-color: rgb(230, 250, 211);
 }
 
 h1 {
     color: blueviolet;
 }
 
-/* table{
-
-} */
+.levels {
+    background-color: rgb(212, 178, 178);
+    width: 300px;
+    height: 40px;
+}
 
 .center {
     margin-left: auto;
     margin-right: auto;
 }
+
+
+
+.status {
+    height: 70px;
+    width: 70px;
+}
+
 .board td {
     color: rgb(78, 64, 170);
-    background-color: rgb(237, 212, 248);
+    background-color: rgb(223, 221, 224);
     width: 40px;
-    height:40px;
+    height: 40px;
     text-align: center;
-    font-size:1.4em;
+    font-size: 1.4em;
     transition: background-color 0.5s;
 }
 
-
 .board td:hover {
-    background-color: rgb(255, 122, 222);
+    background-color: rgb(252, 153, 161);
+}
+
+.disabled {
+    pointer-events: none;
+    /* opacity: 1; */
 }
