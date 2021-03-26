@@ -12,7 +12,7 @@ var secondsLabel = document.getElementById("seconds");
 var totalSeconds = 0;
 
 function stopWatch() {
-  if (isGameON) {
+  if (gIsGameON) {
     setInterval(setTime, 1000);
   }
   console.log('Time on');
@@ -32,3 +32,4 @@ function pad(val) {
     return valString;
   }
 }
+

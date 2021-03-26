@@ -11,34 +11,32 @@
 <body onload="init()">
     <h1>Mine Sweeper</h1>
 
-    <p>High Score: <span class="high-score"></span>x</p>
+    <div class="game center">
+        <div class="high-score">
+            <p>High Score: <span></span>x</p>
+        </div>
+        
+        <div class="levels center">
+            <button class="level-btn" onclick="setLevel(this)">Beginner</button>
+            <button class="level-btn" onclick="setLevel(this)">Medium</button>
+            <button class="level-btn" onclick="setLevel(this)">Expert</button>
+        </div>
+        
+        <div class="status center">
+            <button class="smiley">🙂</button>
+            <label id="minutes">00</label>:<label id="seconds">00</label>
+        </div>
 
-
-    
-
-    <div class="levels center">
-        <button class="level-btn" onclick="setLevel(this)">Beginner</button>
-        <button class="level-btn" onclick="setLevel(this)">Medium</button>
-        <button class="level-btn" onclick="setLevel(this)">Expert</button>
+        <div class="board-container">
+            <table class="center">
+                <tbody class="board"></tbody>
+            </table>
+        </div>
     </div>
-
-    <div class="status center">
-        <button class="smiley" onclick="restart()">🙂</button>
-        <label id="minutes">00</label>:<label id="seconds">00</label>
-    </div>
-
-    
-
-    <div class="board-container">
-        <table class="center">
-            <tbody class="board"></tbody>
-        </table>
-    </div>
-
-
-
+        
     <script src="./js/utils.js"></script>
     <script src="./js/main.js"></script>
 </body>
 
 </html>
+
