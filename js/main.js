@@ -64,6 +64,8 @@ function cellClicked(elCell, i, j) {
 
     if (!gIsGameON) {
         gIsGameON = true
+        // Start Time
+        startTimer()
         gMinesCoord = randLocateMines(i, j)
         console.log('Mines locations:', gMinesCoord);
         setMinesNegsCount(gBoard)
@@ -95,11 +97,13 @@ function cellClicked(elCell, i, j) {
     }
 }
 
-
 function restart() {
     console.log('Restart');
     var elBtn = document.querySelector(".smiley")
     elBtn.innerText = GOOD
+
+    // Reset time
+    resetTimer()
 
     gLevel = {
         SIZE: 4,
@@ -111,8 +115,8 @@ function restart() {
 
 function endGame(status) {
     gIsGameON = false
-    // stop time
-
+    // Stop time
+    stopTimer()
     // change face and add restart
     var elBtn = document.querySelector(".smiley")
     elBtn.setAttribute("onclick", "restart()")
