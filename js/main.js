@@ -16,6 +16,7 @@ var gLevel = {
     MINES: 2
 }
 var gCellsToFind = gLevel.SIZE ** 2
+var gBestTime = 'x'
 
 function init() {
     gBoard = buildBoard()
@@ -46,7 +47,7 @@ function renderBoard(board) {
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>'
         for (var j = 0; j < board[0].length; j++) {
-            var currCell = board[i][j]
+            // var currCell = board[i][j]
             var cellId = `cell-${i}-${j}`
             strHTML += `<td id=${cellId} class="cell" onclick="cellClicked(this, ${i}, ${j})" 
                         oncontextmenu="cellFlaged(this, ${i}, ${j})"></td>`
@@ -60,41 +61,59 @@ function renderBoard(board) {
 function cellClicked(elCell, i, j) {
     var currCell = gBoard[i][j]
     if (currCell.isMarked) return
-    gCellsToFind--
 
     if (!gIsGameON) {
+        // Start Game
         gIsGameON = true
         // Start Time
         startTimer()
         gMinesCoord = randLocateMines(i, j)
         console.log('Mines locations:', gMinesCoord);
         setMinesNegsCount(gBoard)
-        currCell.isShown = true
-        if (currCell.minesAroundCount !== 0) {
-            elCell.innerText = currCell.minesAroundCount
-        }
     }
+
+    currCell.isShown = true
+    gCellsToFind--
     elCell.classList.add("disabled")
+
     if (currCell.isMine) {
         for (var i = 0; i < gMinesCoord.length; i++) {
-            var currI = gMinesCoord[i][0]
-            var currJ = gMinesCoord[i][1]
-            var currMine = gBoard[currI][currJ]
-            console.log('currMine location', currMine);
+            var idxI = gMinesCoord[i][0]
+            var idxJ = gMinesCoord[i][1]
+            var currMine = gBoard[idxI][idxJ]
             currMine.isShown = true
-            var elCell = document.querySelector(`#cell-${currI}-${currJ}`)
+            console.log('currMine location', currMine);
+            var elCell = document.querySelector(`#cell-${idxI}-${idxJ}`)
             elCell.innerText = BANG
         }
         endGame('Game Over')
+
     } else {
-        currCell.isShown = true
-        if (currCell.minesAroundCount !== 0) elCell.innerText = currCell.minesAroundCount
-        // check Win
-        if (gCellsToFind === 0) {
-            // VICTORY
-            endGame('Victory')
+        if (currCell.minesAroundCount === 0) {
+            for (var idxI = i - 1; idxI <= i + 1; idxI++) {
+                if (idxI < 0 || idxI >= gLevel.SIZE) continue
+                for (var idxJ = j - 1; idxJ <= j + 1; idxJ++) {
+                    if (idxJ < 0 || idxJ >= gLevel.SIZE) continue
+                    if (idxI === i && idxJ === j) continue
+                    var currNeg = gBoard[idxI][idxJ]
+                    currNeg.isShown = true
+                    console.log('currNeg:', currNeg);
+                    gCellsToFind--
+                    console.log('gCellsToFind:', gCellsToFind);
+                    var elNeg = document.querySelector(`#cell-${idxI}-${idxJ}`)
+                    elNeg.classList.add("disabled")
+                    if (currNeg.minesAroundCount !== 0) {
+                        elNeg.innerText = currNeg.minesAroundCount
+                    }
+                }
+            }
+        } else {
+            elCell.innerText = currCell.minesAroundCount
         }
     }
+
+    // check Win
+    if (gCellsToFind <= 0) endGame('Victory')
 }
 
 function restart() {
@@ -110,35 +129,54 @@ function restart() {
         MINES: 2
     }
 
+    gCellsToFind = gLevel.SIZE ** 2
+
     init()
 }
 
 function endGame(status) {
     gIsGameON = false
+
     // Stop time
-    stopTimer()
+    var finishTime = stopTimer()
+
     // change face and add restart
     var elBtn = document.querySelector(".smiley")
     elBtn.setAttribute("onclick", "restart()")
 
-    if (status === 'Game Over'){
+    if (status === 'Game Over') {
         elBtn.innerText = DEAD
-
         console.log('Game Over!');
 
     } else if (status === 'Victory') {
         // check time vs high score
-
         elBtn.innerText = WIN
-
         console.log('VICTORY');
+        isBestTime(finishTime)
+        console.log('Best gBestTime:', gBestTime)
     }
     // Disable all cells
-    for (var i = 0; i < gBoard.length; i++){
-        for (var j = 0; j < gBoard[0].length ; j++){
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
             gBoard[i][j].isShown = true
             var currElCell = document.querySelector(`#cell-${i}-${j}`)
             currElCell.classList.add("disabled")
+        }
+    }
+}
+
+function isBestTime(time) {
+    var elSpan = document.querySelector('.high-score span')
+
+    if (gBestTime === 'x') {
+        gBestTime = time
+        elSpan.innerText = gBestTime
+    } else {
+        var bestTime = new Date('December 01, 2021 ' + gBestTime)
+        var finishTime = new Date('December 01, 2021 ' + time)
+        if (finishTime.getTime() < bestTime.getTime()) {
+            gBestTime = time
+            elSpan.innerText = gBestTime
         }
     }
 }
@@ -172,16 +210,11 @@ function randLocateMines(iStart, jStart) {
         var i = getRandomInt(0, gLevel.SIZE)
         var j = getRandomInt(0, gLevel.SIZE)
         if (i === iStart && j === jStart) continue
-        // var currCoord = { i: i, j: j }
         var currCoord = [i, j]
-        if (minesCoord.includes(currCoord)) continue
-        minesCoord.push(currCoord)
-        gBoard[i][j].isMine = true
-
-        // if (!minesCoord.includes(currCoord)) {
-        //     minesCoord.push(currCoord)
-        //     gBoard[i][j].isMine = true
-        // }
+        if (!minesCoord.includes(currCoord)) {
+            minesCoord.push(currCoord)
+            gBoard[i][j].isMine = true
+        }
     }
     return minesCoord
 }
